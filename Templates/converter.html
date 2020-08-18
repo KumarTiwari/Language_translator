@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Converter</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script>
+        $(document).ready(function(){
+            $("button").click(function(e){
+                e.preventDefault();
+                var langs=$("#langs").val()
+                var context=$("#original").val()
+                $.ajax({
+                    type:"POST",
+                    url:'{% url "home" %}',
+                    data:{
+                        'language':langs,
+                        'data_main':context,
+                        'csrfmiddlewaretoken':$('input[name="csrfmiddlewaretoken"]').val()
+                    },
+                    dataType:'json',
+                    success : function(data){
+                        $("#translated").text(data.req_language)
+                    }
+                })
+            })
+    
+        })
+    </script>
+</head>
+<body>
+                          <!-- Navbar  -->
+    <nav class="container_base">
+            <div><a href="{% url 'home' %}"><img id="logo" class="logo" src="{% static 'Images/logo.png' %}"></a></div>
+            <div><p class="web-title">The <strong>Unique Bracket</strong></p></div>      
+    </nav><hr>
+    <form method="POST">   
+        {% csrf_token %}               <!-- Body -->
+    <div class="container_converter">
+        <div class ="original"><textarea name="Original" id="original" cols="40" rows="15">Text You want to Convert:</textarea></div>
+        <div class ="translated"><textarea name="Translated" id="translated" cols="40" rows="15">Result:</textarea></div>
+    </div>
+    <br>
+    <hr>
+    <br><br>
+<div class="convert_To">
+    <label for="lang">Convert To: </label>
+    <select name="lang" id="langs">
+      <option value="ne">Nepali</option>
+      <option value="en">English</option>
+      <option value="pt">Portuguese</option>
+      <option value="fr">French</option>
+    </select>
+</div>
+<br>
+<br>
+<div class="button_last">
+    <button type="submit">Convert</button>
+</div>
+</form>  
+</body>
